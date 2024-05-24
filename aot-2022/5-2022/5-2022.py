@@ -1,4 +1,4 @@
-import array
+import re
 import os
 
 
@@ -33,17 +33,13 @@ def move_crates_9001(file):
         lines = f.readlines()
         for line in lines:
             if line.startswith('move'):
-                from_index = line.index('from')
-                to_index = line.index('to')
+                [count, from_pile, to_pile] = list(
+                    map(int, re.findall(r'\d+', line)))
 
-                count = int(line[5: from_index - 1])
-                from_pile = int(line[from_index + 5: to_index - 1]) - 1
-                to_pile = int(line[-2]) - 1
-
-                piles[to_pile] += piles[from_pile][-count:]
+                piles[to_pile - 1] += piles[from_pile - 1][-count:]
                 for _ in range(count):
-                    del piles[from_pile][-1]
-                
+                    del piles[from_pile - 1][-1]
+
             elif line.startswith('['):
                 for i in range(9):
                     item = line[3 * i + i: 3 * (i + 1) + i]
